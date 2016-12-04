@@ -585,7 +585,7 @@ PACKAGE_STRING='GNU findutils 4.6.0'
 PACKAGE_BUGREPORT='bug-findutils@gnu.org'
 PACKAGE_URL='http://www.gnu.org/software/findutils/'
 
-ac_unique_file="find/pred.c"
+ac_unique_file="findx/pred.c"
 # Factoring default headers for most tests.
 ac_includes_default="\
 #include <stdio.h>
@@ -4057,8 +4057,8 @@ test "$program_suffix" != NONE &&
 ac_script='s/[\\$]/&&/g;s/;s,x,x,$//'
 program_transform_name=`$as_echo "$program_transform_name" | sed "$ac_script"`
 
-# Expand $ac_aux_dir to an absolute path.
-am_aux_dir=`cd "$ac_aux_dir" && pwd`
+# expand $ac_aux_dir to an absolute path
+am_aux_dir=`cd $ac_aux_dir && pwd`
 
 if test x"${MISSING+set}" != xset; then
   case $am_aux_dir in
@@ -4463,7 +4463,6 @@ END
     as_fn_error $? "Your 'rm' program is bad, sorry." "$LINENO" 5
   fi
 fi
-
 
 
 ac_config_headers="$ac_config_headers config.h"
@@ -53498,7 +53497,7 @@ fi
 # Note that in the list below, po/Makefile.in should appear before
 # po/Makefile, so that po/Makefile can be created even if po/Makefile.in
 # starts off missing.
-ac_config_files="$ac_config_files Makefile build-aux/Makefile doc/Makefile find/Makefile find/testsuite/Makefile gl/Makefile gl/lib/Makefile lib/Makefile locate/Makefile locate/testsuite/Makefile m4/Makefile po/Makefile.in po/Makefile tests/Makefile xargs/Makefile xargs/testsuite/Makefile"
+ac_config_files="$ac_config_files Makefile build-aux/Makefile doc/Makefile findx/Makefile findx/testsuite/Makefile gl/Makefile gl/lib/Makefile lib/Makefile locate/Makefile locate/testsuite/Makefile m4/Makefile po/Makefile.in po/Makefile tests/Makefile xargs/Makefile xargs/testsuite/Makefile"
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
@@ -54366,8 +54365,8 @@ do
     "Makefile") CONFIG_FILES="$CONFIG_FILES Makefile" ;;
     "build-aux/Makefile") CONFIG_FILES="$CONFIG_FILES build-aux/Makefile" ;;
     "doc/Makefile") CONFIG_FILES="$CONFIG_FILES doc/Makefile" ;;
-    "find/Makefile") CONFIG_FILES="$CONFIG_FILES find/Makefile" ;;
-    "find/testsuite/Makefile") CONFIG_FILES="$CONFIG_FILES find/testsuite/Makefile" ;;
+    "findx/Makefile") CONFIG_FILES="$CONFIG_FILES findx/Makefile" ;;
+    "findx/testsuite/Makefile") CONFIG_FILES="$CONFIG_FILES findx/testsuite/Makefile" ;;
     "gl/Makefile") CONFIG_FILES="$CONFIG_FILES gl/Makefile" ;;
     "gl/lib/Makefile") CONFIG_FILES="$CONFIG_FILES gl/lib/Makefile" ;;
     "lib/Makefile") CONFIG_FILES="$CONFIG_FILES lib/Makefile" ;;

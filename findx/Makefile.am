@@ -8,9 +8,9 @@ libfindtools_a_SOURCES = finddata.c fstype.c parser.c pred.c exec.c tree.c util.
 # We always build two versions of find, one with fts (called "find"),
 # one without (called "oldfind").  The oldfind binary is no longer
 # installed.
-bin_PROGRAMS     = find
+bin_PROGRAMS     = findx
 check_PROGRAMS   = oldfind
-find_SOURCES     = ftsfind.c
+findx_SOURCES     = ftsfind.c
 oldfind_SOURCES  = oldfind.c
 man_MANS         = find.1
 

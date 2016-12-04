@@ -3,7 +3,7 @@ AC_INIT([GNU findutils], 4.6.0, [bug-findutils@gnu.org])
 AC_CONFIG_AUX_DIR(build-aux)
 AM_INIT_AUTOMAKE
 
-AC_CONFIG_SRCDIR([find/pred.c])
+AC_CONFIG_SRCDIR([findx/pred.c])
 AC_CONFIG_HEADERS([config.h])
 AC_CANONICAL_HOST
 AC_CONFIG_MACRO_DIR(gl/m4)
@@ -243,8 +243,8 @@ AC_CONFIG_FILES([
 Makefile
 build-aux/Makefile
 doc/Makefile
-find/Makefile
-find/testsuite/Makefile
+findx/Makefile
+findx/testsuite/Makefile
 gl/Makefile
 gl/lib/Makefile
 lib/Makefile

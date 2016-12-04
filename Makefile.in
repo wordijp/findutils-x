@@ -1639,7 +1639,7 @@ EXTRA_DIST = COPYING ChangeLog ChangeLog-2013 TODO config.h.in stamp-h.in \
 DISTCLEANFILES = tool-versions.txt
 
 # "tests" is the gnulib unit test dir.
-SUBDIRS = gl tests build-aux lib find xargs locate doc po m4
+SUBDIRS = gl tests build-aux lib findx xargs locate doc po m4
 ACLOCAL_AMFLAGS = -I gl/m4 -I m4
 TESTFILE_SUFFIXES = .exp .xo .xe .xi
 all: config.h

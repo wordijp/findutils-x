@@ -9,7 +9,7 @@ DISTCLEANFILES = tool-versions.txt
 
 
 # "tests" is the gnulib unit test dir.
-SUBDIRS = gl tests build-aux lib find xargs locate doc po m4
+SUBDIRS = gl tests build-aux lib findx xargs locate doc po m4
 
 ACLOCAL_AMFLAGS = -I gl/m4 -I m4
 
