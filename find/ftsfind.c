@@ -85,7 +85,7 @@ static int prev_depth = INT_MIN; /* fts_level can be < 0 */
 static int curr_fd = -1;
 
 
-static bool find (char *arg) __attribute_warn_unused_result__;
+static bool find (int argc, char *argv[]) __attribute_warn_unused_result__;
 static bool process_all_startpoints (int argc, char *argv[]) __attribute_warn_unused_result__;
 
 
@@ -523,17 +523,24 @@ consider_visiting (FTS *p, FTSENT *ent)
 
 
 static bool
-find (char *arg)
+find (int argc, char *argv[])
 {
-  char * arglist[2];
+  char **arglist = (char **)malloc(sizeof(char *) * (argc + 1));
   FTS *p;
   FTSENT *ent;
 
-  state.starting_path_length = strlen (arg);
   inside_dir (AT_FDCWD);
 
-  arglist[0] = arg;
-  arglist[1] = NULL;
+  int arg_max = 0;
+  int len;
+  for (int i = 0; i < argc; i++)
+    {
+      arglist[i] = argv[i];
+      len = strlen(argv[i]);
+      if (arg_max < len) arg_max = len;
+    }
+  arglist[argc] = NULL;
+  state.starting_path_length = arg_max;
 
   switch (options.symlink_handling)
     {
@@ -557,7 +564,7 @@ find (char *arg)
   if (NULL == p)
     {
       error (0, errno, _("cannot search %s"),
-	     safely_quote_err_filename (0, arg));
+        safely_quote_err_filename (0, argv[0]));
       error_severity (EXIT_FAILURE);
     }
   else
@@ -594,8 +601,9 @@ find (char *arg)
 	{
 	  error (0, errno,
 		 "failed to read file names from file system at or below %s",
-		 safely_quote_err_filename (0, arg));
+		 safely_quote_err_filename (0, argv[0]));
 	  error_severity (EXIT_FAILURE);
+	  free(arglist);
 	  return false;
 	}
 
@@ -607,13 +615,81 @@ find (char *arg)
 	   * stderr. */
 	  error (0, errno,
 		 _("failed to restore working directory after searching %s"),
-		 arg);
+		 argv[0]);
 	  error_severity (EXIT_FAILURE);
+	  free(arglist);
 	  return false;
 	}
       p = NULL;
     }
+  free(arglist);
   return true;
+}
+
+// 100 is for now
+#define TAKE_NON_EXPRESSION_MAX_PATH_COUNT 100
+
+static
+char *my_getline_no_lf(FILE *stream) {
+  char *line = NULL;
+  size_t n = 0;
+  if (getline(&line, &n, stream) == -1) return NULL;
+
+  size_t sz = strlen(line);
+  line[sz - 1] = '\0';
+  if (line[sz - 2] == '\r' || line[sz - 2] == '\n') line[sz - 2] = '\0';
+
+  return line;
+}
+
+static bool
+take_non_expression (
+  int *out_argc, char *out_argv[TAKE_NON_EXPRESSION_MAX_PATH_COUNT], bool *inout_stdin_mode,
+  int *inout_arg_i, int argc, char *argv[],
+  bool leading)
+{
+  // clear prev heap
+  int i = 0;
+  for (;i < *out_argc; i++) free(out_argv[i]);
+
+  i = 0;
+  while (i < TAKE_NON_EXPRESSION_MAX_PATH_COUNT && *inout_arg_i < argc)
+    {
+      // continue stdin path
+      if (*inout_stdin_mode)
+        {
+          char *line = NULL;
+          if ((line = my_getline_no_lf(stdin)) != NULL)
+            {
+              out_argv[i++] = line;
+            }
+          else
+            {
+              // stdin done
+              *inout_stdin_mode = false;
+              (*inout_arg_i)++;
+            }
+          continue;
+        }
+
+      const char *arg = argv[*inout_arg_i];
+      if (arg[0] == '-' && !arg[1])
+        {
+          // Just '-' is stdin.
+          *inout_stdin_mode = true;
+          continue;
+        }
+
+      if (looks_like_expression(arg, leading)) break;
+
+      char *p = malloc(sizeof(char) * (strlen(arg) + 1));
+      strcpy(p, arg);
+      out_argv[i++] = p;
+      (*inout_arg_i)++;
+    }
+
+  *out_argc = i;
+  return i > 0;
 }
 
 
@@ -622,12 +698,19 @@ process_all_startpoints (int argc, char *argv[])
 {
   int i;
 
+  int find_argc = 0;
+  char *find_argv[TAKE_NON_EXPRESSION_MAX_PATH_COUNT];
+  bool stdin_mode = false;
+
   /* figure out how many start points there are */
-  for (i = 0; i < argc && !looks_like_expression (argv[i], true); i++)
+  i = 0;
+  while (take_non_expression (
+    &find_argc, find_argv, &stdin_mode,
+    &i, argc, argv,
+    true)
+  )
     {
-      state.starting_path_length = strlen (argv[i]); /* TODO: is this redundant? */
-      if (!find (argv[i]))
-	return false;
+      if (!find (find_argc, find_argv)) goto fail;
     }
 
   if (i == 0)
@@ -638,10 +721,17 @@ process_all_startpoints (int argc, char *argv[])
        * we get a coredump.  The best example of this is if we say
        * "find -printf %H" (note, not "find . -printf %H").
        */
-      char defaultpath[2] = ".";
-      return find (defaultpath);
+      char *defaultpath[] = {"."};
+      if (!find (1, defaultpath)) goto fail;
     }
+
+  // success
+  for (i = 0; i < find_argc; i++) free(find_argv[i]);
   return true;
+
+fail:
+  for (i = 0; i < find_argc; i++) free(find_argv[i]);
+  return false;
 }
 
 
