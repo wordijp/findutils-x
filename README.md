@@ -1,18 +1,18 @@
 # findutils-x
 =============
 
-customized by findutils(from GNU findutils)
+Customized findutils (from GNU findutils)
 
-# Defference from Original?
+# Difference from Original?
 
-* support use to stdin option '-'.
-* speed up when using multiple paths
+* supports use of stdin option '-'.
+* fast compared to original when using multiple paths
 
 # Usage
 
-add use stdin option(-) from find
+Add use stdin option(-) from find
 
-for example, directory structure
+For example, directory structure
 
 ```
 .
@@ -54,7 +54,7 @@ aaa.txt
 
 # About repository
 
-this repository forked from http://ftp.gnu.org/pub/gnu/findutils/ - [findutils-4.6.0.tar.gz](http://ftp.gnu.org/pub/gnu/findutils/findutils-4.6.0.tar.gz)
+This repository is forked from http://ftp.gnu.org/pub/gnu/findutils/ - [findutils-4.6.0.tar.gz](http://ftp.gnu.org/pub/gnu/findutils/findutils-4.6.0.tar.gz)
 
 
 # LICENSE
