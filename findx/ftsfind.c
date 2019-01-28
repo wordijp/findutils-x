@@ -633,11 +633,15 @@ static
 char *my_getline_no_lf(FILE *stream) {
   char *line = NULL;
   size_t n = 0;
-  if (getline(&line, &n, stream) == -1) return NULL;
+  size_t sz;
+  if ((sz = getline(&line, &n, stream)) == -1)
+    {
+      free(line);
+      return NULL;
+    }
 
-  size_t sz = strlen(line);
-  line[sz - 1] = '\0';
-  if (line[sz - 2] == '\r' || line[sz - 2] == '\n') line[sz - 2] = '\0';
+  if (sz >= 1) if (line[sz - 1] == '\r' || line[sz - 1] == '\n') line[sz - 1] = '\0';
+  if (sz >= 2) if (line[sz - 2] == '\r' || line[sz - 2] == '\n') line[sz - 2] = '\0';
 
   return line;
 }
